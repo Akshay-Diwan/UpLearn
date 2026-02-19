@@ -1,9 +1,8 @@
-import { ProgressBar } from "../components/ProgressBar";
-import { NavigationButtons } from "../components/Quiz/Navigation";
-import { QuestionCard } from "../components/Quiz/QuestionCard";
+import { useState } from "react";
 import { QuizContainer } from "../components/Quiz/QuizContainer";
-import {QuizResult} from "../components/Quiz/Result/QuizResult";
-import { useQuiz } from "../hooks/quiz";
+import {QuizSection} from "../components/Quiz/QuizSection";
+import type { Question } from "../types/interface";
+
 
 const QUESTIONS = [
   {
@@ -77,60 +76,49 @@ const QUESTIONS = [
   //   correctAnswer: "Merge Sort",
   // },
 ];
+const QUESTIONS2: Question[] = [
+ {
+     id: 0,
+     type: "Instruction",
+     canReview: false,
+     question: "This is a paragraph answer according to this.",
+     options: ["none"],
+     correctAnswer: "none"
+ },
+ {
+    id: 1,
+    question: "What is name of first computer?",
+    options: ["Queue", "Stack", "Linked List", "Tree"],
+    correctAnswer: "Stack",
+  },
+  {
+    id: 2,
+    question: "what is x if x + 2 = 1?",
+    options: [
+      "Computer Style Sheets",
+      "Creative Style Sheets",
+      "Cascading Style Sheets",
+      "Colorful Style Sheets",
+    ],
+    correctAnswer: "Cascading Style Sheets",
+  },
+  {
+    id: 3,
+    question: "Which HTTP method is used to update an existing resource?",
+    options: ["GET", "POST", "PUT", "DELETE"],
+    correctAnswer: "PUT",
+  },
+]
 
 
 export default function Quiz() {
-  const {
-    currentIndex,
-    currentQuestion,
-    selectedAnswer,
-    answers,
-    isFirst,
-    isLast,
-    submitted,
-    total,
-    score,
-    accuracy,
-    selectAnswer,
-    goNext,
-    goPrev,
-    submit,
-    restart,
-    timeSpent
-  } = useQuiz  (QUESTIONS);
+const [section, setSection] = useState<number>(1);
 
   return (
     <QuizContainer title="Quick Quiz">
-      {submitted ? (
-        <QuizResult
-          score={score}
-          total={total}
-          accuracy={accuracy}
-          answers={answers}
-          questions={QUESTIONS}
-          timeSpent = {timeSpent}
-          onRestart={restart}
-        />
-      ) : (
-        <>
-          <ProgressBar current={currentIndex} total={total} />
-          <QuestionCard
-            question={currentQuestion}
-            selectedAnswer={selectedAnswer}
-            onSelect={selectAnswer}
-          />
-          <NavigationButtons
-            isFirst={isFirst}
-            isLast={isLast}
-            canProceed={selectedAnswer !== null}
-            onPrev={goPrev}
-            onNext={goNext}
-            onSubmit={submit}
-          />
-          {/* <p className="text-black">Answer Next Questions based on this paragraph</p> */}
-          {/* <p className="text-black">Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus consectetur illum voluptas quas perspiciatis, animi excepturi quo nulla soluta omnis ipsam praesentium dolore similique minus architecto impedit labore ea, ipsa odio dolor odit voluptatibus illo! Molestias corporis quam eum tempora. Quod ipsum ea corporis pariatur inventore alias dicta molestias id quia eligendi tenetur aperiam voluptatem harum, optio necessitatibus labore beatae soluta sunt? Rem sunt, eos expedita officia, autem nobis facere animi debitis, voluptates repellendus consequatur eaque illum sed quos dolor odio tenetur ipsa incidunt aspernatur corporis. Exercitationem voluptate assumenda veniam voluptatem voluptatum perspiciatis molestiae iusto quas, animi est pariatur! Eius?</p> */}
-        </>
-      )}
+
+        <QuizSection key={section} section = {section} setSection = {setSection} totalSections={2} QUESTIONS={section == 1? QUESTIONS : QUESTIONS2}/>
+
     </QuizContainer>
   );
 }

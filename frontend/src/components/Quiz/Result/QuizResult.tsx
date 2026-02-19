@@ -1,9 +1,11 @@
  import { Link } from "react-router-dom";
 import type { Question } from "../../../types/interface";
  import { ResultRow } from "./ResultRow";
+import type React from "react";
+import type { SetStateAction } from "react";
 
- export function QuizResult({ score, total, accuracy, answers, questions, onRestart, timeSpent }: {
-     timeSpent: Record<number, number>, score: number, total: number, accuracy: number, answers: string[], questions: Question[], onRestart: () => void
+ export function QuizResult({ score, totalQuestions, accuracy, answers, questions, timeSpent,section, setSection, totalSections }: {
+     timeSpent: Record<number, number>, score: number, totalQuestions: number, accuracy: number, answers: string[], questions: Question[], section: number, setSection: React.Dispatch<SetStateAction<number>>, totalSections: number
  }) {
   console.log(timeSpent)
    const grade =
@@ -19,7 +21,7 @@ import type { Question } from "../../../types/interface";
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-blue-50 mb-4">
           <span className="text-3xl font-bold text-blue-500">{score}</span>
         </div>
-        <p className="text-slate-400 text-sm mb-1">out of {total} correct</p>
+        <p className="text-slate-400 text-sm mb-1">out of {totalQuestions} correct</p>
         <p className={`text-2xl font-bold mb-1 ${grade.color}`}>{grade.label}</p>
         <p className="text-slate-500 text-sm">You scored <strong className="text-slate-700">{accuracy}%</strong> accuracy</p>
 
@@ -29,7 +31,7 @@ import type { Question } from "../../../types/interface";
              ✓ {score} Correct
            </span>
            <span className="px-3 py-1.5 bg-red-50 border border-red-200 rounded-full text-xs font-semibold text-red-600">
-             ✗ {total - score} Wrong
+             ✗ {totalQuestions - score} Wrong
            </span>
          </div>
        </div>
@@ -53,17 +55,30 @@ import type { Question } from "../../../types/interface";
        </div>
 
       {/* Restart */}
-       <button
+       {/* <button
          onClick={onRestart}
         className="w-full py-3 rounded-xl bg-blue-500 text-white font-semibold text-sm hover:bg-blue-600 transition-colors duration-200 shadow-sm hover:shadow-md"
       >
          Retake Quiz
-       </button>
-       <Link to={"/quiz2"}>
-         <button className="w-full py-3 rounded-xl bg-blue-500 text-white font-semibold text-sm hover:bg-blue-600 transition-colors duration-200 shadow-sm hover:shadow-md">
+       </button> */}
+         {
+          section != totalSections?
+        <button 
+         onClick={() => setSection(prev => prev + 1)}
+         className="w-full py-3 rounded-xl bg-blue-500 text-white font-semibold text-sm hover:bg-blue-600 transition-colors duration-200 shadow-sm hover:shadow-md">
             Move to Next Section
          </button>
-       </Link>
+          :
+          <Link to={'/result'}>
+          <button
+         className="w-full py-3 rounded-xl bg-blue-500 text-white font-semibold text-sm hover:bg-blue-600 transition-colors duration-200 shadow-sm hover:shadow-md"
+          >
+            See Analysis
+          </button>
+          </Link>
+         }
+
+
      </div>
    );
  }

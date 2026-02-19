@@ -7,13 +7,16 @@ export function useQuiz(questions: Question[]) {
   const [submitted, setSubmitted] = useState(false);
   const [startIndex, setStartIndex] = useState<number>(0);
   const total = questions.length;
+  let numberOfInstructions = 0;
+  questions.forEach(questions => questions.type && questions.type == "Instruction" && numberOfInstructions++);
+  const numberOfQuestions = total - numberOfInstructions;
   const currentQuestion = questions[currentIndex]; 
   const selectedAnswer  = answers[currentQuestion.id] ?? null;
 
   const isFirst = currentIndex === startIndex;
   const isLast  = currentIndex === total - 1;
   const score   = questions.filter(q => answers[q.id] === q.correctAnswer).length;
-  const accuracy = Math.round((score / total) * 100);
+  const accuracy = Math.round((score / (total - numberOfInstructions)) * 100);
   const [startTime, setStartTime] = useState(Date.now());
   const [timeSpent, setTimeSpent] = useState<Record<number, number>>({});
   
@@ -52,5 +55,5 @@ export function useQuiz(questions: Question[]) {
   const submit  = useCallback(() => { recordTime(); setSubmitted(true)}, [currentIndex, startTime]);
   const restart = useCallback(() => { setCurrentIndex(0); setAnswers([]); setSubmitted(false); setStartTime(Date.now()) }, []);
   
-  return { currentIndex, currentQuestion, selectedAnswer, answers, isFirst, isLast, submitted, total, score, accuracy, selectAnswer, goNext, goPrev, submit, restart, timeSpent };
+  return { currentIndex, currentQuestion, selectedAnswer, answers, isFirst, isLast, submitted, total, score, accuracy, selectAnswer, goNext, goPrev, submit, restart, timeSpent, numberOfQuestions };
 }
