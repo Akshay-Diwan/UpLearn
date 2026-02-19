@@ -1,5 +1,5 @@
 import React from 'react'
-import ResultPage from '../components/Quiz/Result/QuizResult'
+import ResultPage from '../components/Quiz/Result/StatResult'
 
 const Result = () => {
   return (
