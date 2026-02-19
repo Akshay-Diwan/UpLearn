@@ -5,10 +5,12 @@ export function useQuiz(questions: Question[]) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const [startIndex, setStartIndex] = useState<number>(0);
   const total = questions.length;
   const currentQuestion = questions[currentIndex]; 
   const selectedAnswer  = answers[currentQuestion.id] ?? null;
-  const isFirst = currentIndex === 0;
+
+  const isFirst = currentIndex === startIndex;
   const isLast  = currentIndex === total - 1;
   const score   = questions.filter(q => answers[q.id] === q.correctAnswer).length;
   const accuracy = Math.round((score / total) * 100);
@@ -36,13 +38,17 @@ export function useQuiz(questions: Question[]) {
     if (!isLast){
       console.log("Start : " + startTime);
       console.log("Now : " + Date.now());
-      console.log("Current index : ", currentIndex)
+      console.log("Current index : ", currentIndex);
       recordTime();
+      if(questions[currentIndex].canReview === false){
+         setStartIndex(currentIndex + 1); 
+        
+      }
       setCurrentIndex(i => i+1);
     }
      }, [isLast, currentIndex, startTime]);
   
-  const goPrev  = useCallback(() => { if (!isFirst){recordTime(); setCurrentIndex(i => i-1);} }, [isFirst, currentIndex, startTime]);
+  const goPrev  = useCallback(() => { if (!isFirst){recordTime(); setCurrentIndex(i => i-1); console.log("start index: ", startIndex)} }, [isFirst, currentIndex, startTime, startIndex]);
   const submit  = useCallback(() => { recordTime(); setSubmitted(true)}, [currentIndex, startTime]);
   const restart = useCallback(() => { setCurrentIndex(0); setAnswers([]); setSubmitted(false); setStartTime(Date.now()) }, []);
   

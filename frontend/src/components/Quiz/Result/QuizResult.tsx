@@ -1,4 +1,5 @@
- import type { Question } from "../../../types/interface";
+ import { Link } from "react-router-dom";
+import type { Question } from "../../../types/interface";
  import { ResultRow } from "./ResultRow";
 
  export function QuizResult({ score, total, accuracy, answers, questions, onRestart, timeSpent }: {
@@ -39,6 +40,8 @@
        </h3>
        <div className="flex flex-col gap-3 mb-8">
          {questions.map((q, i) => (
+            q.type?
+            <></>:
            <ResultRow
              key={q.id}
              question={q}
@@ -56,6 +59,11 @@
       >
          Retake Quiz
        </button>
+       <Link to={"/quiz2"}>
+         <button className="w-full py-3 rounded-xl bg-blue-500 text-white font-semibold text-sm hover:bg-blue-600 transition-colors duration-200 shadow-sm hover:shadow-md">
+            Move to Next Section
+         </button>
+       </Link>
      </div>
    );
  }

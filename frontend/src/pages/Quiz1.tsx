@@ -77,31 +77,7 @@ const QUESTIONS = [
   //   correctAnswer: "Merge Sort",
   // },
 ];
-const QUESTIONS_2 = [
- {
-    id: 1,
-    question: "What is name of first computer?",
-    options: ["Queue", "Stack", "Linked List", "Tree"],
-    correctAnswer: "Stack",
-  },
-  {
-    id: 2,
-    question: "what is x if x + 2 = 1?",
-    options: [
-      "Computer Style Sheets",
-      "Creative Style Sheets",
-      "Cascading Style Sheets",
-      "Colorful Style Sheets",
-    ],
-    correctAnswer: "Cascading Style Sheets",
-  },
-  {
-    id: 3,
-    question: "Which HTTP method is used to update an existing resource?",
-    options: ["GET", "POST", "PUT", "DELETE"],
-    correctAnswer: "PUT",
-  },
-]
+
 
 export default function Quiz() {
   const {
