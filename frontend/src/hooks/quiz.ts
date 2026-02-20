@@ -52,7 +52,15 @@ export function useQuiz(questions: Question[]) {
      }, [isLast, currentIndex, startTime]);
   
   const goPrev  = useCallback(() => { if (!isFirst){recordTime(); setCurrentIndex(i => i-1); console.log("start index: ", startIndex)} }, [isFirst, currentIndex, startTime, startIndex]);
-  const submit  = useCallback(() => { recordTime(); setSubmitted(true)}, [currentIndex, startTime]);
+  const submit  = useCallback(() => { {
+    recordTime();
+    localStorage.setItem("learningTypeQuiz", JSON.stringify({
+      question: questions,
+      answers: answers,
+      timeSpent: timeSpent
+    }))
+    setSubmitted(true)
+}}, [currentIndex, startTime]);
   const restart = useCallback(() => { setCurrentIndex(0); setAnswers([]); setSubmitted(false); setStartTime(Date.now()) }, []);
   
   return { currentIndex, currentQuestion, selectedAnswer, answers, isFirst, isLast, submitted, total, score, accuracy, selectAnswer, goNext, goPrev, submit, restart, timeSpent, numberOfQuestions };

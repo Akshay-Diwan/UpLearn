@@ -13,7 +13,6 @@ import type { SetStateAction } from "react";
      accuracy >= 70 ? { label: "Good Job!", color: "text-blue-500" } :
      accuracy >= 50 ? { label: "Not Bad!", color: "text-amber-500" } :
                       { label: "Keep Practicing", color: "text-red-400" };
-
   return (
     <div className="animate-in fade-in duration-500">
       {/* Score Hero */}

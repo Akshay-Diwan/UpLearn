@@ -7,7 +7,68 @@ import type { Question } from "../types/interface";
 const QUESTIONS = [
   {
     id: 1,
-    question: "Which data structure follows the Last-In-First-Out (LIFO) principle?",
+    question: `
+    Let 𝑓(𝑥)={ln⁡(1+𝑥)𝑥,	𝑥≠0𝑘,	𝑥=0f(x)=⎩⎨⎧	​xln(1+x)	​,k,	​x=0x=0	​
+
+Find the value of 
+𝑘
+k such that 
+𝑓
+(
+𝑥
+)
+f(x) is continuous at 
+𝑥
+=
+0
+x=0.
+
+With this value of 
+𝑘
+k, evaluate:
+
+lim
+⁡
+𝑥
+→
+0
+𝑓
+(
+𝑥
+)
+−
+𝑓
+(
+0
+)
+𝑥
+x→0
+lim
+	​
+
+x
+f(x)−f(0)
+	​
+
+
+Hence determine whether 
+𝑓
+(
+𝑥
+)
+f(x) is differentiable at 
+𝑥
+=
+0
+x=0, and find 
+𝑓
+′
+(
+0
+)
+f
+′
+(0).`,
     options: ["Queue", "Stack", "Linked List", "Tree"],
     correctAnswer: "Stack",
   },
@@ -28,6 +89,38 @@ const QUESTIONS = [
     options: ["GET", "POST", "PUT", "DELETE"],
     correctAnswer: "PUT",
   },
+   {
+     id: 4,
+     type: "Instruction",
+     canReview: false,
+     question: "This is a paragraph answer according to this.",
+     options: ["none"],
+     correctAnswer: "none"
+ },
+ {
+    id: 5,
+    question: "What is name of first computer?",
+    options: ["Queue", "Stack", "Linked List", "Tree"],
+    correctAnswer: "Stack",
+  },
+  {
+    id: 6,
+    question: "what is x if x + 2 = 1?",
+    options: [
+      "Computer Style Sheets",
+      "Creative Style Sheets",
+      "Cascading Style Sheets",
+      "Colorful Style Sheets",
+    ],
+    correctAnswer: "Cascading Style Sheets",
+  },
+  {
+    id: 7,
+    question: "Which HTTP method is used to update an existing resource?",
+    options: ["GET", "POST", "PUT", "DELETE"],
+    correctAnswer: "PUT",
+  },
+  
   // {
   //   id: 4,
   //   question: "In JavaScript, which keyword declares a block-scoped variable?",
@@ -117,7 +210,7 @@ const [section, setSection] = useState<number>(1);
   return (
     <QuizContainer title="Quick Quiz">
 
-        <QuizSection key={section} section = {section} setSection = {setSection} totalSections={2} QUESTIONS={section == 1? QUESTIONS : QUESTIONS2}/>
+        <QuizSection key={section} section = {section} setSection = {setSection} totalSections={1} QUESTIONS={QUESTIONS}/>
 
     </QuizContainer>
   );
