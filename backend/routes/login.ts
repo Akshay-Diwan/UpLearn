@@ -11,7 +11,10 @@ router.post('/', async (req: Request, res: Response) => {
         [body.name]
     )
     if(!existingUser){
-        return res.status(404).send(`no user with name ${body.name} found`);
+        return res.status(404).send({
+            error: true,
+            message: `no user with name ${body.name} found`
+        });
         
     }
     res.send({

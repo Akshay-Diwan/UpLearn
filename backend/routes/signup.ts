@@ -1,6 +1,7 @@
 import express from "express"
 import type { Request, Response }  from "express"
 import db from "../db/index.js";
+import type { SignUpDTO } from "../types/dto.ts";
 const router = express.Router();
 
 router.post('/', async (req: Request, res: Response) => {
