@@ -1,9 +1,9 @@
 import { useState } from "react";
-import GlobalStyles from "./components/chatInterface/GlobalStyles";
-import Header from "./components/Header";
-import LeftPanel from "./components/LefttPanel";
-import ChatInterface from "./components/ChatInterface";
-import RightPanel from "./components/chatInterface/RightPanel";
+import GlobalStyles from "../components/chatInterface/GlobalStyles";
+import Header from "../components/chatInterface/Header";
+import LeftPanel from "../components/chatInterface/LeftPanel";
+import ChatInterface from "../components/chatInterface/ChatInterface";
+import RightPanel from "../components/chatInterface/RightPanel";
 
 
 export default function Dashboard() {

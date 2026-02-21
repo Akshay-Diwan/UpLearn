@@ -1,19 +1,31 @@
-
 export function NavigationButtons(
     { isFirst, isLast, canProceed, onPrev, onNext, onSubmit }:
     {isFirst: boolean, isLast: boolean, canProceed: boolean, onPrev: () => void, onNext: () => void , onSubmit: ()=> void}
 ) {
   return (
-    <div className="flex items-center justify-between mt-10 pt-6 border-t border-slate-100">
+    <div style={{
+      display: "flex", alignItems: "center", justifyContent: "space-between",
+      marginTop: "2.5rem", paddingTop: "1.5rem",
+      borderTop: "1px solid rgba(0,212,255,0.12)",
+    }}>
+
+      {/* Previous Button */}
       <button
         onClick={onPrev}
         disabled={isFirst}
-        className={[
-          "flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
-          isFirst
-            ? "text-slate-300 cursor-not-allowed"
-            : "text-slate-600 hover:text-slate-900 hover:bg-slate-100",
-        ].join(" ")}
+        style={{
+          display: "flex", alignItems: "center", gap: "8px",
+          padding: "10px 20px", borderRadius: "12px",
+          fontSize: "0.85rem", fontWeight: 500,
+          fontFamily: "'DM Sans', sans-serif",
+          border: isFirst ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(0,212,255,0.2)",
+          background: isFirst ? "transparent" : "rgba(0,212,255,0.06)",
+          color: isFirst ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.7)",
+          cursor: isFirst ? "not-allowed" : "pointer",
+          transition: "all 0.2s",
+        }}
+        onMouseEnter={e => { if (!isFirst) { e.currentTarget.style.background = "rgba(0,212,255,0.12)"; e.currentTarget.style.color = "#fff"; }}}
+        onMouseLeave={e => { if (!isFirst) { e.currentTarget.style.background = "rgba(0,212,255,0.06)"; e.currentTarget.style.color = "rgba(255,255,255,0.7)"; }}}
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -21,16 +33,27 @@ export function NavigationButtons(
         Previous
       </button>
 
+      {/* Next / Submit Button */}
       {isLast ? (
         <button
           onClick={onSubmit}
           disabled={!canProceed}
-          className={[
-            "flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200",
-            canProceed
-              ? "bg-blue-500 text-white hover:bg-blue-600 shadow-sm hover:shadow-md"
-              : "bg-slate-100 text-slate-400 cursor-not-allowed",
-          ].join(" ")}
+          style={{
+            display: "flex", alignItems: "center", gap: "8px",
+            padding: "10px 24px", borderRadius: "12px",
+            fontSize: "0.85rem", fontWeight: 600,
+            fontFamily: "'DM Sans', sans-serif",
+            border: "none",
+            background: canProceed
+              ? "linear-gradient(135deg, #00d4ff, #0055cc)"
+              : "rgba(255,255,255,0.06)",
+            color: canProceed ? "#fff" : "rgba(255,255,255,0.25)",
+            cursor: canProceed ? "pointer" : "not-allowed",
+            boxShadow: canProceed ? "0 0 20px rgba(0,212,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)" : "none",
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={e => { if (canProceed) e.currentTarget.style.boxShadow = "0 0 30px rgba(0,212,255,0.55), inset 0 1px 0 rgba(255,255,255,0.15)"; }}
+          onMouseLeave={e => { if (canProceed) e.currentTarget.style.boxShadow = "0 0 20px rgba(0,212,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)"; }}
         >
           Submit Quiz
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -41,12 +64,22 @@ export function NavigationButtons(
         <button
           onClick={onNext}
           disabled={!canProceed}
-          className={[
-            "flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200",
-            canProceed
-              ? "bg-blue-500 text-white hover:bg-blue-600 shadow-sm hover:shadow-md"
-              : "bg-slate-100 text-slate-400 cursor-not-allowed",
-          ].join(" ")}
+          style={{
+            display: "flex", alignItems: "center", gap: "8px",
+            padding: "10px 24px", borderRadius: "12px",
+            fontSize: "0.85rem", fontWeight: 600,
+            fontFamily: "'DM Sans', sans-serif",
+            border: "none",
+            background: canProceed
+              ? "linear-gradient(135deg, #00d4ff, #0055cc)"
+              : "rgba(255,255,255,0.06)",
+            color: canProceed ? "#fff" : "rgba(255,255,255,0.25)",
+            cursor: canProceed ? "pointer" : "not-allowed",
+            boxShadow: canProceed ? "0 0 20px rgba(0,212,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)" : "none",
+            transition: "all 0.2s",
+          }}
+          onMouseEnter={e => { if (canProceed) e.currentTarget.style.boxShadow = "0 0 30px rgba(0,212,255,0.55), inset 0 1px 0 rgba(255,255,255,0.15)"; }}
+          onMouseLeave={e => { if (canProceed) e.currentTarget.style.boxShadow = "0 0 20px rgba(0,212,255,0.35), inset 0 1px 0 rgba(255,255,255,0.15)"; }}
         >
           Next
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -54,6 +87,7 @@ export function NavigationButtons(
           </svg>
         </button>
       )}
+
     </div>
   );
 }
