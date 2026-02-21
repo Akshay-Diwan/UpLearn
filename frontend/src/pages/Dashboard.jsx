@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import GlobalStyles from '../components/chatInterface/GlobalStyles'
 import ChatInterface from '../components/chatInterface/ChatInterface'
 import LeftPanel from '../components/chatInterface/LeftPanel'
@@ -10,6 +10,8 @@ export default function Dashboard() {
   const [queryHistory, setQueryHistory]       = useState([]);
   const [pdfCount, setPdfCount]               = useState(0);
   const [sessionTime, setSessionTime]         = useState("00:00");
+  const [mermaidCode, setMermaidCode]         = useState("");
+  const flowChartRef = useRef(null);
 
   const addToHistory = (text) => {
     const time = new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
@@ -46,9 +48,13 @@ export default function Dashboard() {
         {/* Layout */}
         <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", width:"100vw"
          }}>
-          <Header />
+          <Header 
+            mermaidCode={mermaidCode}
+            setMermaidCode={setMermaidCode}
+            diagramRef={flowChartRef}
+           />
           <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-            {/* <LeftPanel onPdfCountChange={setPdfCount} /> */}
+            {mermaidCode.length > 0 && <LeftPanel onPdfCountChange={setPdfCount} diagramRef={flowChartRef} />}
             <ChatInterface
               externalInput={suggestionInput}
               clearExternalInput={() => setSuggestionInput("")}

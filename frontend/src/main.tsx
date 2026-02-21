@@ -9,6 +9,7 @@ import StudentForm from './pages/SignUp.tsx'
 import Login from './pages/Login.tsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Flowchart from './pages/Flowchart.tsx'
+import PhysicsMathSolver from './pages/PhysicsSolver.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -26,6 +27,7 @@ createRoot(document.getElementById('root')!).render(
       <>
       <Route path="/dashboard" element={<Dashboard/>}/>
       <Route path='/flowchart' element={<Flowchart/>} />
+      <Route path='/solver' element={<PhysicsMathSolver/>} />
       <Route path='*' element={<Navigate replace to="/login"/>} />
       </>
     }

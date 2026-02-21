@@ -6,7 +6,7 @@ class ProjectileScene(Scene):
     def construct(self):
 
         velocity = 30
-        angle = np.radians(45)
+        angle = np.radians(60)
         g = 9.8
 
         dot = Dot(color=BLUE)

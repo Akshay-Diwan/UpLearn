@@ -20,6 +20,7 @@ import pyttsx3
 from fastapi.concurrency import run_in_threadpool
 from fastapi.staticfiles import StaticFiles
 import re
+import uuid
 
 
 from flowgen.index import sanitize_mermaid
@@ -27,8 +28,11 @@ from flowgen.index import sanitize_mermaid
 app=FastAPI()
 AUDIO_DIR = "audio_files"
 os.makedirs(AUDIO_DIR, exist_ok=True)
+os.makedirs("videos", exist_ok=True)
 
 app.mount("/audio", StaticFiles(directory=AUDIO_DIR), name="audio")
+app.mount("/media", StaticFiles(directory="media"), name="media")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -123,14 +127,23 @@ async def generate_animation(problem: str = Form(...)):
     params = extract_params_from_llm(problem)
 
     video_path = generate_manim_script(params)
-
-    subprocess.run([
-        "manim",
-        "generated_scene.py",
-        "ProjectileScene",
-        "-ql"
-    ])
+    # video_path =generate_manim_script({
+    #     "type": "projectile",
+    #     "velocity": 25,
+    #     "angle": 60
+    # })
+    # unique_id = str(uuid.uuid4())
+    # output_name = f"{unique_id}.mp4"
+    # subprocess.run([
+    #     "manim",
+    #     "generated_scene.py",
+    #     "ProjectileScene",
+    #     "-ql",
+    #     "--media_dir", "videos",
+    #     "-output_file", unique_id
+    # ])
     return {
+        "answer": params["answer"],
         "video_url": f"http://localhost:8000/{video_path}"
     }
 
