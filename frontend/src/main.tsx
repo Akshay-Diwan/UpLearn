@@ -7,7 +7,7 @@ import Quiz from './pages/Quiz.tsx'
 import Result from './pages/Result.tsx'
 import StudentForm from './pages/SignUp.tsx'
 import Login from './pages/Login.tsx'
-
+import Dashboard from './pages/Dashboard.jsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -21,6 +21,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path='/quiz' element={<Quiz/>} />  
         <Route path = '/result' element={<Result/>} /> 
         <Route path= "/" element={<App/>}/>
+        <Route path="/dashboard" element={<Dashboard/>}/>
       </>:
       <Route path='*' element={<Navigate replace to="/login"/>} />
     }
