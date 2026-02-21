@@ -1,10 +1,9 @@
 import { useState } from "react";
-import GlobalStyles from "./components/chatInterface/GlobalStyles";
-import Header from "./components/Header";
-import LeftPanel from "./components/LefttPanel";
-import ChatInterface from "./components/ChatInterface";
-import RightPanel from "./components/chatInterface/RightPanel";
-
+import GlobalStyles from '../components/chatInterface/GlobalStyles'
+import ChatInterface from '../components/chatInterface/Header'
+import LeftPanel from '../components/chatInterface/LeftPanel'
+import RightPanel from '../components/chatInterface/RightPanel'
+import Header from '../components/chatInterface/Header'
 
 export default function Dashboard() {
   const [suggestionInput, setSuggestionInput] = useState("");
@@ -19,11 +18,13 @@ export default function Dashboard() {
 
   return (
     <>
+    
       <GlobalStyles />
       <div style={{
         height: "100vh", background: "var(--dark)",
         display: "flex", flexDirection: "column",
         overflow: "hidden", position: "relative",
+        minWidth: "100vw"
       }}>
         {/* Deep space background */}
         <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
@@ -43,7 +44,8 @@ export default function Dashboard() {
         </div>
 
         {/* Layout */}
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%" }}>
+        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", height: "100%", width:"100vw"
+         }}>
           <Header />
           <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
             <LeftPanel onPdfCountChange={setPdfCount} />
