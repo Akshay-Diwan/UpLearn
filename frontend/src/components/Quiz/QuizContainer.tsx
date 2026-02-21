@@ -1,6 +1,6 @@
 export function QuizContainer({ children, title }: {children: React.ReactElement, title: string}) {
   return (
-    <main className="w-screen max-[100%] overflow-hidden bg-slate-50 flex items-start justify-center px-4 py-12 m-0">
+    <main className="min-h-screen w-screen max-[100%] overflow-hidden bg-slate-50 flex items-start justify-center px-4 py-12 m-0">
       <div className="w-full max-w-2xl">
         {/* App header */}
         <header className="mb-8 text-center">

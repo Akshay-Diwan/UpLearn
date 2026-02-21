@@ -1,8 +1,9 @@
 import type { Question } from "../../../types/interface";
+import { convertToMinutesAndSeconds } from "../../../utils/timeConversions";
 
-export function ResultRow({ question, userAnswer, index }: {question: Question, userAnswer: string, index: number}) {
+export function ResultRow({ question, userAnswer, index, timeSpent }: {question: Question, userAnswer: string, index: number, timeSpent: number}) {
   const isCorrect = userAnswer === question.correctAnswer;
-
+  const timeTaken = convertToMinutesAndSeconds(timeSpent);
   return (
     <div className={[
       "p-5 rounded-xl border",
@@ -37,6 +38,9 @@ export function ResultRow({ question, userAnswer, index }: {question: Question, 
               <span className="font-medium">{question.correctAnswer}</span>
             </p>
           )}
+          <p className="font-medium text-black">
+            time taken : {timeTaken[0] + " m , " + timeTaken[1] + "s"}
+          </p>
         </div>
       </div>
     </div>
