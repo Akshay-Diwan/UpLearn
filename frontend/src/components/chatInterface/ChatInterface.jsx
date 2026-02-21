@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import Stopwatch from "./Stopwatch";
-
+import Stopwatch from "./Stopwatch.jsx";
+import { uploadPdfAndAsk} from "../../apis/rag.js";
 const initMessages = [{
   role: "assistant",
   text: "Hello! I'm your AI Academic Ally by Nexus.\n\nUpload a PDF from the left panel, or ask me anything about your studies. I can explain concepts, generate practice questions, summarize chapters, and build personalized study plans — all tailored to how you learn best. 🚀",
@@ -11,11 +11,13 @@ const initMessages = [{
 //   clearExternalInput()        — resets externalInput in App after we consume it
 //   onMessageSent(text)         — logs user query to App → RightPanel history + stats
 
-export default function ChatInterface({ externalInput, clearExternalInput, onMessageSent }) {
+export default function ChatInterface({ externalInput, clearExternalInput, onMessageSent }
+
+) {
   const [messages, setMessages] = useState(initMessages);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [attachments, setAttachments] = useState([]);
+  const [attachment, setAttachment] = useState();
   const bottomRef = useRef(null);
   const fileRef = useRef(null);
   const textareaRef = useRef(null);
@@ -35,17 +37,20 @@ export default function ChatInterface({ externalInput, clearExternalInput, onMes
   }, [messages, loading]);
 
   const send = async () => {
-    if (!input.trim() && !attachments.length) return;
-    const msg = { role: "user", text: input, attachments: [...attachments] };
+    if (!input.trim() || !attachment) return;
+    const msg = { role: "user", text: input, attachment: attachment };
     setMessages(m => [...m, msg]);
     if (input.trim()) onMessageSent && onMessageSent(input.trim());
-    setInput("");
-    setAttachments([]);
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1400));
+    const data = await uploadPdfAndAsk(attachment,input.trim());
+    setLoading(false);
+    setInput("");
+    console.log(data);
+    // await new Promise(r => setTimeout(r, 1400));
     setMessages(m => [...m, {
       role: "assistant",
-      text: `Great question about "${msg.text || "your file"}"!\n\nIn the live version, I would:\n\n• Analyze your PDF content deeply\n• Provide detailed, step-by-step explanations\n• Generate targeted practice problems\n• Create memory aids and study frameworks\n\nPowered by Nexus AI — built to help you learn smarter, not harder. 🎓`,
+      text: data.answer,
+      // text: `Great question about "${msg.text || "your file"}"!\n\nIn the live version, I would:\n\n• Analyze your PDF content deeply\n• Provide detailed, step-by-step explanations\n• Generate targeted practice problems\n• Create memory aids and study frameworks\n\nPowered by Nexus AI — built to help you learn smarter, not harder. 🎓`,
     }]);
     setLoading(false);
   };
@@ -55,10 +60,10 @@ export default function ChatInterface({ externalInput, clearExternalInput, onMes
   };
 
   const handleFile = (e) => {
-    setAttachments(prev => [...prev, ...Array.from(e.target.files).map(f => f.name)]);
+    setAttachment(e.target.files?.[0]);
   };
 
-  const canSend = input.trim() || attachments.length > 0;
+  const canSend = input.trim() || attachment;
 
   return (
     <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0, position: "relative" }}>
@@ -143,17 +148,15 @@ export default function ChatInterface({ externalInput, clearExternalInput, onMes
               }} />
 
               {/* Attachment chips */}
-              {msg.attachments?.length > 0 && (
+              {/* {msg.attachment && (
                 <div style={{ marginBottom: "8px", display: "flex", gap: "5px", flexWrap: "wrap" }}>
-                  {msg.attachments.map((a, j) => (
-                    <span key={j} style={{
+                    <span key={msg.attachment.name} style={{
                       background: "rgba(0,212,255,0.12)", border: "1px solid rgba(0,212,255,0.3)",
                       borderRadius: "6px", padding: "2px 8px", fontSize: "0.63rem",
                       color: "var(--cyan)", fontFamily: "var(--font-body)",
-                    }}>📎 {a}</span>
-                  ))}
+                    }}>📎 {attachment}</span>
                 </div>
-              )}
+              )} */}
 
               <p style={{
                 margin: 0, fontSize: "0.82rem", color: "rgba(255,255,255,0.88)",
@@ -207,24 +210,23 @@ export default function ChatInterface({ externalInput, clearExternalInput, onMes
         }} />
 
         {/* Attachment chips */}
-        {attachments.length > 0 && (
+        {/* {attachment && (
           <div style={{ marginBottom: "10px", display: "flex", gap: "6px", flexWrap: "wrap" }}>
-            {attachments.map((a, i) => (
-              <span key={i} style={{
+
+              <span style={{
                 background: "rgba(0,212,255,0.1)", border: "1px solid rgba(0,212,255,0.25)",
                 borderRadius: "8px", padding: "4px 10px",
                 fontSize: "0.68rem", color: "var(--cyan)",
                 fontFamily: "var(--font-body)", display: "flex", alignItems: "center", gap: "5px",
               }}>
-                📎 {a}
+                📎 {attachment}
                 <span
-                  onClick={() => setAttachments(p => p.filter((_, j) => j !== i))}
+                  // onClick={() => setAttachment(p => p.filter((_, j) => j !== i))}
                   style={{ cursor: "pointer", color: "rgba(255,255,255,0.4)", fontSize: "10px" }}
-                >✕</span>
+                > ✕ </span>
               </span>
-            ))}
           </div>
-        )}
+        )} */}
 
         {/* Input row */}
         <div style={{

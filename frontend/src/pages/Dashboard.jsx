@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GlobalStyles from '../components/chatInterface/GlobalStyles'
-import ChatInterface from '../components/chatInterface/Header'
+import ChatInterface from '../components/chatInterface/ChatInterface'
 import LeftPanel from '../components/chatInterface/LeftPanel'
 import RightPanel from '../components/chatInterface/RightPanel'
 import Header from '../components/chatInterface/Header'
