@@ -7,3 +7,7 @@ sample.pdf
 history.pdf
 test.py
 sample.py
+venv
+videoGen/__pycache__
+media
+
