@@ -48,7 +48,7 @@ export default function Dashboard() {
          }}>
           <Header />
           <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-            <LeftPanel onPdfCountChange={setPdfCount} />
+            {/* <LeftPanel onPdfCountChange={setPdfCount} /> */}
             <ChatInterface
               externalInput={suggestionInput}
               clearExternalInput={() => setSuggestionInput("")}

@@ -1,150 +1,134 @@
-import { useState, useEffect, useRef } from "react";
-
+// import { useState, useEffect, useRef } from "react";
+// import mermaid from "mermaid";
 // ─── Mermaid CDN loader ───────────────────────────────────────────────────────
-const MERMAID_CDN = "https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js";
+// const MERMAID_CDN = "https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js";
 
-function loadMermaid(callback) {
-  if (window.mermaid) {
-    callback();
-    return;
-  }
-  const script = document.createElement("script");
-  script.src = MERMAID_CDN;
-  script.onload = callback;
-  script.onerror = () => console.error("Failed to load Mermaid from CDN");
-  document.head.appendChild(script);
-}
+// function loadMermaid(callback) {
+//   if (window.mermaid) {
+//     callback();
+//     return;
+//   }
+//   const script = document.createElement("script");
+//   script.src = MERMAID_CDN;
+//   script.onload = callback;
+//   script.onerror = () => console.error("Failed to load Mermaid from CDN");
+  // document.head.appendChild(script);
+// }
 
-function initMermaid() {
-  window.mermaid.initialize({
-    startOnLoad: false,
-    theme: "dark",
-    themeVariables: {
-      primaryColor: "#20c8b4",
-      primaryTextColor: "#c8d8e8",
-      primaryBorderColor: "#1a4a5a",
-      lineColor: "#2a5060",
-      secondaryColor: "#0f1d2e",
-      tertiaryColor: "#0b1120",
-      background: "#0d1a28",
-      mainBkg: "#0f1d2e",
-      nodeBorder: "#1a4a5a",
-      clusterBkg: "#0d1a28",
-      titleColor: "#c8d8e8",
-      edgeLabelBackground: "#0f1d2e",
-      fontFamily: "Inter, sans-serif",
-    },
-    flowchart: { curve: "basis", htmlLabels: true },
-    securityLevel: "loose",
-  });
-}
+// function initMermaid() {
+//   window.mermaid.initialize({
+//     startOnLoad: false,
+//     theme: "dark",
+//     themeVariables: {
+//       primaryColor: "#20c8b4",
+//       primaryTextColor: "#c8d8e8",
+//       primaryBorderColor: "#1a4a5a",
+//       lineColor: "#2a5060",
+//       secondaryColor: "#0f1d2e",
+//       tertiaryColor: "#0b1120",
+//       background: "#0d1a28",
+//       mainBkg: "#0f1d2e",
+//       nodeBorder: "#1a4a5a",
+//       clusterBkg: "#0d1a28",
+//       titleColor: "#c8d8e8",
+//       edgeLabelBackground: "#0f1d2e",
+//       fontFamily: "Inter, sans-serif",
+//     },
+//     flowchart: { curve: "basis", htmlLabels: true },
+//     securityLevel: "loose",
+//   });
+// }
 
-function generateId() {
-  return Math.random().toString(36).substring(2, 12);
-}
+// function generateId() {
+//   return Math.random().toString(36).substring(2, 12);
+// }
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
+import { useState, useEffect, useRef } from "react";
+import mermaid from "mermaid";
+
 export default function Flowchart() {
   const [input, setInput] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const [mermaidCode, setMermaidCode] = useState("");
   const [showCode, setShowCode] = useState(false);
-  const [mermaidReady, setMermaidReady] = useState(false);
-  const conversationIdRef = useRef(generateId());
+
   const diagramRef = useRef(null);
 
-  // Load mermaid once on mount
+  // ✅ Initialize mermaid once
   useEffect(() => {
-    loadMermaid(() => {
-      initMermaid();
-      setMermaidReady(true);
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: "dark",
+      securityLevel: "loose",
+      flowchart: { htmlLabels: true, curve: "basis" },
     });
   }, []);
 
-  // Re-render diagram whenever mermaidCode changes and mermaid is ready
+  // ✅ Render diagram when code changes
   useEffect(() => {
-    if (!mermaidCode || !mermaidReady || !diagramRef.current) return;
+    if (!mermaidCode) return;
     renderDiagram(mermaidCode);
-  }, [mermaidCode, mermaidReady]);
+  }, [mermaidCode]);
 
+  // ✅ Mermaid render function
   async function renderDiagram(code) {
-    if (!window.mermaid || !diagramRef.current) return;
+    if (!diagramRef.current) return;
+
     const id = "mermaid-" + Date.now();
+
     try {
-      const { svg } = await window.mermaid.render(id, code);
+      const { svg } = await mermaid.render(id, code);
       diagramRef.current.innerHTML = svg;
-      const svgEl = diagramRef.current.querySelector("svg");
-      if (svgEl) {
-        svgEl.style.maxWidth = "100%";
-        svgEl.style.height = "auto";
-      }
     } catch (err) {
-      console.error("Mermaid render error:", err);
+      console.error(err);
       diagramRef.current.innerHTML = `
-        <div style="color:#f87171;background:rgba(248,113,113,0.04);border:1px solid rgba(248,113,113,0.2);border-radius:10px;padding:14px 18px;font-size:0.88rem;line-height:1.6;">
-          ⚠️ Could not render diagram — invalid Mermaid syntax returned by AI.<br/><br/>
-          <strong style="color:#94a3b8;">Raw output:</strong>
-          <pre style="margin-top:8px;font-size:0.76rem;white-space:pre-wrap;color:#4a7090;">${code}</pre>
+        <div style="color:#f87171">
+          Invalid Mermaid syntax
+          <pre>${code}</pre>
         </div>`;
     }
   }
 
+  // ✅ Generate from FastAPI
   async function generate() {
     const message = input.trim();
     if (!message) return;
-    fetch("http://localhost:8000/chat/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        message,
-        role: "user",
-        conversation_id: conversationIdRef.current,
-        field: "",
-      }),
-    });
+
     setStatus("loading");
     setError("");
     setMermaidCode("");
-    if (diagramRef.current) diagramRef.current.innerHTML = "";
 
     try {
-      const res = await fetch("http://localhost:8000/chat/", {
+      const formdata = new FormData();
+      formdata.append("input", message);
+
+      const res = await fetch("http://localhost:8000/flowchart/", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message,
-          role: "user",
-          conversation_id: conversationIdRef.current,
-          field: "",
-        }),
+        body: formdata,
       });
 
-      if (!res.ok) {
-        let errMsg = "Server error";
-        try {
-          const errData = await res.json();
-          errMsg = errData.detail || errMsg;
-        } catch {}
-        throw new Error(errMsg);
-      }
-
       const data = await res.json();
+
       let code = data.response.trim();
-      // Strip markdown code fences if model added them
-      code = code.replace(/^```[\w]*\n?/i, "").replace(/\n?```$/i, "").trim();
+
+      // 🔥 remove ```mermaid fences if AI sends them
+      code = code
+        .replace(/^```mermaid/i, "")
+        .replace(/^```/, "")
+        .replace(/```$/, "")
+        .trim();
 
       setMermaidCode(code);
       setStatus("success");
     } catch (err) {
-      console.error("Generate error:", err);
-      setError(err.message);
+      setError("Server error");
       setStatus("error");
     }
   }
 
   function resetChat() {
-    conversationIdRef.current = generateId();
     setInput("");
     setStatus("idle");
     setMermaidCode("");
@@ -153,12 +137,9 @@ export default function Flowchart() {
     if (diagramRef.current) diagramRef.current.innerHTML = "";
   }
 
-  function handleKeyDown(e) {
-    if (e.key === "Enter" && e.ctrlKey) generate();
-  }
-
   const isLoading = status === "loading";
   const hasOutput = status !== "idle";
+
 
   return (
     <>
@@ -529,7 +510,7 @@ export default function Flowchart() {
             className="app-textarea"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
+            // onKeyDown={handleKeyDown}
             placeholder="e.g. User login process with email verification and forgot password flow..."
           />
           <div className="app-btn-row">
@@ -556,7 +537,7 @@ export default function Flowchart() {
               <div className="app-output-line" />
             </div>
 
-            <div className="app-diagram-box">
+            {/* <div className="app-diagram-box">
               {isLoading ? (
                 <div className="app-loading">
                   <div className="app-spinner" />
@@ -567,7 +548,19 @@ export default function Flowchart() {
               ) : (
                 <div className="app-diagram-inner" ref={diagramRef} />
               )}
-            </div>
+            </div> */}
+            <div className="app-diagram-box">
+  {isLoading ? (
+    <div className="app-loading">
+      <div className="app-spinner" />
+      Building your diagram…
+    </div>
+  ) : status === "error" ? (
+    <div className="app-error">⚠️ {error}</div>
+  ) : (
+    <div className="app-diagram-inner" ref={diagramRef} />
+  )}
+</div>
 
             {mermaidCode && !isLoading && (
               <>
@@ -587,7 +580,7 @@ export default function Flowchart() {
 
         {/* Mermaid load status indicator (bottom-right corner) */}
         <span className="app-mermaid-status">
-          {mermaidReady ? "● mermaid ready" : "○ loading mermaid…"}
+          {/* {mermaidReady ? "● mermaid ready" : "○ loading mermaid…"} */}
         </span>
       </div>
     </>

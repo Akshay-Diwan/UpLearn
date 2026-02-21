@@ -56,7 +56,7 @@ export default function Header() {
           fontFamily: "var(--font-body)", cursor: "pointer",
           boxShadow: "0 0 20px rgba(0,212,255,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
           letterSpacing: "0.02em",
-        }}>+ New Session</button>
+        }}>Generate FlowChart</button>
       </nav>
     </header>
   );

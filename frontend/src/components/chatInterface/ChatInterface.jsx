@@ -50,6 +50,7 @@ export default function ChatInterface({ externalInput, clearExternalInput, onMes
     setMessages(m => [...m, {
       role: "assistant",
       text: data.answer,
+      audio_url: data.audio_url,
       // text: `Great question about "${msg.text || "your file"}"!\n\nIn the live version, I would:\n\n• Analyze your PDF content deeply\n• Provide detailed, step-by-step explanations\n• Generate targeted practice problems\n• Create memory aids and study frameworks\n\nPowered by Nexus AI — built to help you learn smarter, not harder. 🎓`,
     }]);
     setLoading(false);
@@ -95,106 +96,93 @@ export default function ChatInterface({ externalInput, clearExternalInput, onMes
         <Stopwatch />
       </div>
 
-      {/* ── Message list ── */}
+{/* ── Message list ── */}
+{/* ── Message list ── */}
+<div style={{
+  flex: 1, overflowY: "auto", padding: "1.5rem 1.8rem",
+  display: "flex", flexDirection: "column", gap: "18px",
+  background: "linear-gradient(180deg, rgba(2,8,16,0.3) 0%, transparent 100%)",
+}}>
+  {messages.map((msg, i) => (
+    <div
+      key={i}
+      className={msg.role === "assistant" ? "msg-ai" : "msg-user"}
+      style={{
+        display: "flex",
+        flexDirection: msg.role === "user" ? "row-reverse" : "row",
+        gap: "12px",
+        alignItems: "flex-start",
+      }}
+    >
+
+      {/* Avatar */}
       <div style={{
-        flex: 1, overflowY: "auto", padding: "1.5rem 1.8rem",
-        display: "flex", flexDirection: "column", gap: "18px",
-        background: "linear-gradient(180deg, rgba(2,8,16,0.3) 0%, transparent 100%)",
+        width: "34px", height: "34px", borderRadius: "10px",
+        flexShrink: 0,
+        background: msg.role === "assistant"
+          ? "linear-gradient(135deg, #00d4ff, #0055cc)"
+          : "linear-gradient(135deg, #7c3aed, #4c1d95)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: "15px",
+        boxShadow: msg.role === "assistant"
+          ? "0 0 16px rgba(0,212,255,0.4)"
+          : "0 0 16px rgba(124,58,237,0.4)",
       }}>
-        {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={msg.role === "assistant" ? "msg-ai" : "msg-user"}
+        {msg.role === "assistant" ? "🤖" : "🎓"}
+      </div>
+
+      {/* Bubble */}
+      <div style={{
+        maxWidth: "68%",
+        background: msg.role === "assistant"
+          ? "linear-gradient(135deg, rgba(0,212,255,0.07), rgba(0,85,204,0.05))"
+          : "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(76,29,149,0.1))",
+        border: `1px solid ${
+          msg.role === "assistant"
+            ? "rgba(0,212,255,0.18)"
+            : "rgba(124,58,237,0.28)"
+        }`,
+        borderRadius: msg.role === "assistant"
+          ? "4px 16px 16px 16px"
+          : "16px 4px 16px 16px",
+        padding: "12px 16px",
+        position: "relative",
+      }}>
+
+        {/* 🔊 WAV AUDIO PLAYER */}
+        {msg.role === "assistant" && msg.audio_url && (
+          <audio
+            controls
+            preload="none"
             style={{
-              display: "flex",
-              flexDirection: msg.role === "user" ? "row-reverse" : "row",
-              gap: "12px", alignItems: "flex-start",
+              width: "100%",
+              marginBottom: "8px",
+              height: "32px",
+              filter: "invert(1) hue-rotate(180deg)" // matches dark UI
             }}
           >
-            {/* Avatar */}
-            <div style={{
-              width: "34px", height: "34px", borderRadius: "10px", flexShrink: 0,
-              background: msg.role === "assistant"
-                ? "linear-gradient(135deg, #00d4ff, #0055cc)"
-                : "linear-gradient(135deg, #7c3aed, #4c1d95)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "15px",
-              boxShadow: msg.role === "assistant"
-                ? "0 0 16px rgba(0,212,255,0.4)"
-                : "0 0 16px rgba(124,58,237,0.4)",
-              position: "relative", overflow: "hidden",
-            }}>
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.15), transparent)" }} />
-              {msg.role === "assistant" ? "🤖" : "🎓"}
-            </div>
-
-            {/* Bubble */}
-            <div style={{
-              maxWidth: "68%",
-              background: msg.role === "assistant"
-                ? "linear-gradient(135deg, rgba(0,212,255,0.07), rgba(0,85,204,0.05))"
-                : "linear-gradient(135deg, rgba(124,58,237,0.15), rgba(76,29,149,0.1))",
-              border: `1px solid ${msg.role === "assistant" ? "rgba(0,212,255,0.18)" : "rgba(124,58,237,0.28)"}`,
-              borderRadius: msg.role === "assistant" ? "4px 16px 16px 16px" : "16px 4px 16px 16px",
-              padding: "12px 16px",
-              position: "relative", overflow: "hidden",
-            }}>
-              {/* Shimmer top line */}
-              <div style={{
-                position: "absolute", top: 0, left: 0, right: 0, height: "1px",
-                background: msg.role === "assistant"
-                  ? "linear-gradient(90deg, transparent, rgba(0,212,255,0.4), transparent)"
-                  : "linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent)",
-              }} />
-
-              {/* Attachment chips */}
-              {/* {msg.attachment && (
-                <div style={{ marginBottom: "8px", display: "flex", gap: "5px", flexWrap: "wrap" }}>
-                    <span key={msg.attachment.name} style={{
-                      background: "rgba(0,212,255,0.12)", border: "1px solid rgba(0,212,255,0.3)",
-                      borderRadius: "6px", padding: "2px 8px", fontSize: "0.63rem",
-                      color: "var(--cyan)", fontFamily: "var(--font-body)",
-                    }}>📎 {attachment}</span>
-                </div>
-              )} */}
-
-              <p style={{
-                margin: 0, fontSize: "0.82rem", color: "rgba(255,255,255,0.88)",
-                fontFamily: "var(--font-body)", lineHeight: "1.65",
-                whiteSpace: "pre-wrap", fontWeight: 400,
-              }}>{msg.text}</p>
-            </div>
-          </div>
-        ))}
-
-        {/* Typing indicator */}
-        {loading && (
-          <div className="msg-ai" style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-            <div style={{
-              width: "34px", height: "34px", borderRadius: "10px",
-              background: "linear-gradient(135deg, #00d4ff, #0055cc)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "15px", boxShadow: "0 0 16px rgba(0,212,255,0.4)",
-            }}>🤖</div>
-            <div style={{
-              background: "linear-gradient(135deg, rgba(0,212,255,0.07), rgba(0,85,204,0.05))",
-              border: "1px solid rgba(0,212,255,0.18)",
-              borderRadius: "4px 16px 16px 16px",
-              padding: "14px 18px",
-              display: "flex", gap: "5px", alignItems: "center",
-            }}>
-              {[0, 1, 2].map(i => (
-                <div key={i} style={{
-                  width: "7px", height: "7px", borderRadius: "50%",
-                  background: "var(--cyan)",
-                  animation: `bounce-dot 1.2s ${i * 0.18}s infinite`,
-                }} />
-              ))}
-            </div>
-          </div>
+            <source src={msg.audio_url} type="audio/wav" />
+            Your browser does not support WAV audio.
+          </audio>
         )}
-        <div ref={bottomRef} />
+
+        {/* Text */}
+        <p style={{
+          margin: 0,
+          fontSize: "0.82rem",
+          color: "rgba(255,255,255,0.88)",
+          fontFamily: "var(--font-body)",
+          lineHeight: "1.65",
+          whiteSpace: "pre-wrap",
+        }}>
+          {msg.text}
+        </p>
       </div>
+    </div>
+  ))}
+
+  <div ref={bottomRef} />
+</div>
 
       {/* ── Input / Search Bar ── */}
       <div style={{

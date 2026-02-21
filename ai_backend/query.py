@@ -1,4 +1,4 @@
-from fastapi import FastAPI,UploadFile,File,Form
+from fastapi import FastAPI,UploadFile,File,Form, HTTPException
 from openai import OpenAI
 from pathlib import Path
 from langchain_community.document_loaders import PyPDFLoader
@@ -20,6 +20,10 @@ import pyttsx3
 from fastapi.concurrency import run_in_threadpool
 from fastapi.staticfiles import StaticFiles
 import re
+
+
+from flowgen.index import sanitize_mermaid
+
 app=FastAPI()
 AUDIO_DIR = "audio_files"
 os.makedirs(AUDIO_DIR, exist_ok=True)
@@ -40,7 +44,7 @@ def generate_audio(text: str, filename: str)->None:
 class UserInput(BaseModel):
     ques:str=Field(...,description="question to be asked")
 client=OpenAI(
-    api_key="AIzaSyDbyDivEYNb3SlryflNzIMefKdoGGrwKGE",
+    api_key="",
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 text_splitter=RecursiveCharacterTextSplitter(
@@ -115,8 +119,7 @@ async def upload(file:UploadFile=File(...),ques: str = Form(...)):
         "audio_url": f"http://127.0.0.1:8000/audio/{audio_filename}"        # full URL path for the client
     }
 @app.post("/generate-animation")
-async def generate_animation(problem: str):
-
+async def generate_animation(problem: str = Form(...)):
     params = extract_params_from_llm(problem)
 
     video_path = generate_manim_script(params)
@@ -191,6 +194,81 @@ async def upload(file:UploadFile=File(...),ques: str = Form(...)):
         "audio_url": f"http://127.0.0.1:8000/audio/{audio_filename}"        # full URL path for the client
     }
     
+    
+@app.post("/flowchart/")
+async def chat(input: str = Form(...)):
+    SYSTEM_PROMPT=SYSTEM_PROMPT="""
+You are a Mermaid.js flowchart generator.
+
+Your task is to return ONLY valid Mermaid.js code.
+
+STRICT RULES:
+- Output must start with: graph TD  OR  flowchart LR
+- Do NOT use markdown or backticks
+- Do NOT write explanations or any extra text
+- Do NOT wrap the code in ```mermaid
+- Return plain text only
+
+FLOWCHART RULES:
+- Use clear node IDs like A, B, C, D
+- Every connection must be written separately
+  (Example: A --> B and A --> C, NEVER use "A and B --> C")
+
+TEXT SAFETY RULES:
+- Do NOT use square brackets inside node text
+- Do NOT use round brackets inside node text
+- Replace special characters:
+  :  →  -
+  &  →  and
+  /  →  space
+- Keep labels short and readable
+
+STYLING RULES:
+- Use valid Mermaid style syntax only
+  Example: style A fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+- Do NOT put spaces inside style properties
+
+SUBGRAPH RULES:
+- Subgraphs must follow valid Mermaid syntax
+- All nodes inside must be properly connected
+
+OUTPUT QUALITY:
+- The flowchart must be well-structured and visually balanced
+- Prefer vertical layout for processes (graph TD)
+- Avoid crossing arrows when possible
+
+EXAMPLE OUTPUT FORMAT:
+
+graph TD
+    A[Start] --> B{Valid?}
+    B -->|Yes| C[Access granted]
+    B -->|No| D[Retry]
+
+Return ONLY the Mermaid code.
+
+"""
+    try:
+        response=client.chat.completions.create(
+    model="gemini-2.5-flash",
+    messages=[
+        {"role":"system","content":SYSTEM_PROMPT},
+        {"role":"user","content":input}
+    ]
+    )
+        resp = response.choices[0].message.content
+        print(resp)
+        resp = resp.strip()
+        print("end")
+        resp=sanitize_mermaid(resp)
+        print("sanitized:", resp)
+        # conversation.messages.append({"role": "assistant", "content": response})
+        return {
+            "response": resp,
+            # "conversation_id": input.conversation_id
+        }
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Chat session ended: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="localhost", port=8000)
