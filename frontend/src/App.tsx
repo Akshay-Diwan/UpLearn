@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import GlobalStyles from "./components/GlobalStyles";
+import Background from "./components/Background";
+import Navbar from "./components/Navbar";
+import HeroSection from "./components/HeroSection";
+import FeaturesSection from "./components/FeaturesSection";
+import HowItWorksSection from "./components/HowItWorksSection";
+import AIDemoSection from "./components/AIDemoSection";
+import LoadingScreen from "./components/LoadingScreen";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [loaded, setLoaded] = useState(false);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs bg-amber-200">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      <GlobalStyles />
 
-export default App
+      {/* Loading screen — shows on first visit, fades out when done */}
+      {!loaded && <LoadingScreen onComplete={() => setLoaded(true)} />}
+
+      <div style={{
+        position: "relative", minHeight: "100vh", background: "var(--dark)",
+        opacity: loaded ? 1 : 0,
+        transition: "opacity 0.5s ease 0.1s",
+      }}>
+        <Background />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <Navbar />
+          <HeroSection />
+          <FeaturesSection />
+          <HowItWorksSection />
+          <AIDemoSection />
+        </div>
+      </div>
+    </>
+  );
+}

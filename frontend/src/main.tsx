@@ -20,11 +20,11 @@ createRoot(document.getElementById('root')!).render(
     {
       localStorage.getItem("username") ? 
       <>
-        <Route path='/quiz' element={<Quiz/>} />  
-        <Route path = '/result' element={<Result/>} /> 
-        <Route path= "/" element={<App/>}/>
       </>:
       <>
+      <Route path= "/" element={<App/>}/>
+      <Route path='/quiz' element={<Quiz/>} />  
+      <Route path = '/result' element={<Result/>} /> 
       <Route path="/dashboard" element={<Dashboard/>}/>
       <Route path='/flowchart' element={<Flowchart/>} />
       <Route path='/solver' element={<PhysicsMathSolver/>} />

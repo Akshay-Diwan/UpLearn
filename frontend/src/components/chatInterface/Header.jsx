@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import mermaid from "mermaid";
+import { Link } from "react-router-dom";
 export default function Header({ mermaidCode, setMermaidCode, diagramRef }) {
   const [showPopup, setShowPopup] = useState(false);
   const [flowInput, setFlowInput] = useState("");
@@ -129,9 +130,9 @@ export default function Header({ mermaidCode, setMermaidCode, diagramRef }) {
 
       {/* Nav links + CTA */}
       <nav style={{ display: "flex", gap: "1.8rem", alignItems: "center" }}>
-        {["Dashboard", "Progress", "Sessions"].map(item => (
-          <a key={item} href="#" className="nav-link">{item}</a>
-        ))}
+        <Link to="/dashboard" className="nav-link">Dashboard</Link>
+        <Link to="/quiz" className="nav-link">Quiz</Link>
+        <Link to="/solver" className="nav-link">Problem Solver</Link>
         <div style={{ width: "1px", height: "20px", background: "rgba(0,212,255,0.15)" }} />
 
             <div

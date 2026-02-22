@@ -198,23 +198,36 @@ export default function ChatInterface({ externalInput, clearExternalInput, onMes
         }} />
 
         {/* Attachment chips */}
-        {/* {attachment && (
-          <div style={{ marginBottom: "10px", display: "flex", gap: "6px", flexWrap: "wrap" }}>
-
-              <span style={{
-                background: "rgba(0,212,255,0.1)", border: "1px solid rgba(0,212,255,0.25)",
-                borderRadius: "8px", padding: "4px 10px",
-                fontSize: "0.68rem", color: "var(--cyan)",
-                fontFamily: "var(--font-body)", display: "flex", alignItems: "center", gap: "5px",
-              }}>
-                📎 {attachment}
-                <span
-                  // onClick={() => setAttachment(p => p.filter((_, j) => j !== i))}
-                  style={{ cursor: "pointer", color: "rgba(255,255,255,0.4)", fontSize: "10px" }}
-                > ✕ </span>
-              </span>
-          </div>
-        )} */}
+{attachment && (
+  <div style={{ marginBottom: "10px", display: "flex", gap: "6px", flexWrap: "wrap" }}>
+    <span
+      style={{
+        background: "rgba(0,212,255,0.1)",
+        border: "1px solid rgba(0,212,255,0.25)",
+        borderRadius: "8px",
+        padding: "4px 10px",
+        fontSize: "0.68rem",
+        color: "var(--cyan)",
+        fontFamily: "var(--font-body)",
+        display: "flex",
+        alignItems: "center",
+        gap: "5px",
+      }}
+    >
+      📎 {attachment.name}
+      <span
+        onClick={() => setAttachment(null)}
+        style={{
+          cursor: "pointer",
+          color: "rgba(255,255,255,0.4)",
+          fontSize: "10px",
+        }}
+      >
+        ✕
+      </span>
+    </span>
+  </div>
+)}
 
         {/* Input row */}
         <div style={{

@@ -127,7 +127,7 @@ USER QUESTION:
 {problem}
 """
     client = OpenAI(
-    api_key="*",
+    api_key="",
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
     

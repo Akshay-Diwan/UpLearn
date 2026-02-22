@@ -28,7 +28,7 @@ from flowgen.index import sanitize_mermaid
 app=FastAPI()
 AUDIO_DIR = "audio_files"
 os.makedirs(AUDIO_DIR, exist_ok=True)
-os.makedirs("videos", exist_ok=True)
+os.makedirs("videos", exist_ok=True)  
 
 app.mount("/audio", StaticFiles(directory=AUDIO_DIR), name="audio")
 app.mount("/media", StaticFiles(directory="media"), name="media")
@@ -282,6 +282,64 @@ Return ONLY the Mermaid code.
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Chat session ended: {str(e)}")
 
+class Quizresult(BaseModel):
+    Accuracy:int
+class Quiz(BaseModel):
+    despo:str 
+
+@app.post("/quiz/")
+async def dha(num:Quizresult):
+    if num.Accuracy<=20:
+        category="Struggler"
+    elif num.Accuracy>20 and num.Accuracy<=45:
+        category="Supported"
+    elif num.Accuracy>45 and num.Accuracy<=72:
+        category="Standard"
+    else:
+        category="Accelerated"            
+
+    
+    return{
+        "category":category
+    }
+
+@app.post("/quiz_analysis/")
+async def sen(inpu:Quiz):
+    SYSTEM_PROMPT="""
+You are an AI assistant, who has an input  of student category.
+There are 4 categories : Accelerated, Struggler, Standard, Supported.
+But as per every category, give 3 point description with short introduction
+For example if you are accelerated learner, then the description is as follows:
+Description:
+You're a Fast-Track Learner
+You absorb and process new information at a remarkable pace. Complex concepts rarely slow you down — you thrive on challenge and actively seek deeper understanding beyond the surface level.
+
+Recommendations
+
+1
+Tackle advanced material and stretch assignments to stay engaged.
+
+2
+Mentor peers to reinforce your own mastery and build leadership skills.
+
+3
+Explore interdisciplinary connections to broaden your knowledge base.
+
+Such give it all type of learning styles, of all other types.
+Remember only give as per given above.
+
+""" 
+    response=client.chat.completions.create(
+        model="gemini-2.5-flash",
+        messages=[
+            {"role":"system","content": SYSTEM_PROMPT},
+            {"role":"user","content":inpu.despo}
+        ]
+    )
+    answer=response.choices[0].message.content
+    return{
+        "Answer":answer
+    }
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="localhost", port=8000)

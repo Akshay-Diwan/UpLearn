@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { fetchAnswerAndVideoUrl } from "../apis/manimSolution";
-
+import NavButton from "../components/button/NavButtons";
+// import Header from "../components/chatInterface/Header.jsx";
 type Subject = "physics" | "mathematics";
 type MessageRole = "user" | "assistant";
 
@@ -305,33 +306,7 @@ export default function PhysicsMathSolver() {
       {/* Header */}
       <header className="relative z-10 border-b border-slate-800/60 bg-slate-900/50 backdrop-blur-xl">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-              <span className="text-lg">⚡</span>
-            </div>
-            <div>
-              <h1 className="text-sm font-bold tracking-tight text-white">SciSolve <span className="text-cyan-400">AI</span></h1>
-              <p className="text-[10px] text-slate-500 tracking-widest uppercase">Physics & Mathematics Tutor</p>
-            </div>
-          </div>
-          {/* Subject Toggle */}
-          <div className="flex items-center gap-1 bg-slate-800/60 rounded-xl p-1 border border-slate-700/40">
-            {(["physics", "mathematics"] as Subject[]).map((s) => (
-              <button
-                key={s}
-                onClick={() => setSubject(s)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all duration-200 ${
-                  subject === s
-                    ? s === "physics"
-                      ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 shadow"
-                      : "bg-violet-500/20 text-violet-400 border border-violet-500/40 shadow"
-                    : "text-slate-500 hover:text-slate-300"
-                }`}
-              >
-                {s === "physics" ? "⚛ Physics" : "∑ Mathematics"}
-              </button>
-            ))}
-          </div>
+          <NavButton/>
         </div>
       </header>
 
