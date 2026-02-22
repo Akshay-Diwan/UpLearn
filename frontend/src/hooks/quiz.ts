@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import type { Question } from "../types/interface";
+import { submitQuiz } from "../apis/result";
 
 export function useQuiz(questions: Question[]) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,6 +60,9 @@ export function useQuiz(questions: Question[]) {
       answers: answers,
       timeSpent: timeSpent
     }))
+    localStorage.setItem("accuracy", "" + accuracy);
+    localStorage.setItem("score", "" + score);
+    submitQuiz();
     setSubmitted(true)
 }}, [currentIndex, startTime]);
   const restart = useCallback(() => { setCurrentIndex(0); setAnswers([]); setSubmitted(false); setStartTime(Date.now()) }, []);
