@@ -48,7 +48,7 @@ def generate_audio(text: str, filename: str)->None:
 class UserInput(BaseModel):
     ques:str=Field(...,description="question to be asked")
 client=OpenAI(
-    api_key="",
+    api_key="AIzaSyBFnTBgIDPPp2gB3sH0qd5iu87pBnVc3jc",
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 text_splitter=RecursiveCharacterTextSplitter(

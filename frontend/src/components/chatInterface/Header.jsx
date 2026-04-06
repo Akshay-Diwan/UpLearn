@@ -62,7 +62,7 @@ export default function Header({ mermaidCode, setMermaidCode, diagramRef }) {
 
     try {
       setIsGenerating(true);
-      const res = await fetch("http://localhost:8000/flowchart/", {
+      const res = await fetch("http://127.0.0.1:8000/flowchart/", {
         method: "POST",
         body: formdata,
       });
